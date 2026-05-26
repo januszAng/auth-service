@@ -1,0 +1,87 @@
+import * as jose from "jose";
+
+interface TokenPayload {
+  sub: string;
+  email: string;
+  role: string;
+}
+
+function getSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET environment variable is not set");
+  }
+  return new TextEncoder().encode(secret);
+}
+
+function getIssuer(): string {
+  return "auth-service";
+}
+
+function getAudience(): string {
+  return "proton";
+}
+
+export async function createAccessToken(
+  payload: TokenPayload,
+): Promise<string> {
+  return new jose.SignJWT({ email: payload.email, role: payload.role })
+    .setProtectedHeader({ alg: "HS256" })
+    .setSubject(payload.sub)
+    .setIssuer(getIssuer())
+    .setAudience(getAudience())
+    .setIssuedAt()
+    .setExpirationTime("15 minutes")
+    .sign(getSecret());
+}
+
+export async function createRefreshToken(
+  payload: TokenPayload,
+): Promise<string> {
+  return new jose.SignJWT({ email: payload.email, role: payload.role })
+    .setProtectedHeader({ alg: "HS256" })
+    .setSubject(payload.sub)
+    .setIssuer(getIssuer())
+    .setAudience(getAudience())
+    .setIssuedAt()
+    .setExpirationTime("7 days")
+    .sign(getSecret());
+}
+
+export async function verifyAccessToken(
+  token: string,
+): Promise<{ userId: string; email: string; role: string }> {
+  const { payload } = await jose.jwtVerify(token, getSecret(), {
+    issuer: getIssuer(),
+    audience: getAudience(),
+    algorithms: ["HS256"],
+  });
+  return {
+    userId: payload.sub!,
+    email: payload.email as string,
+    role: payload.role as string,
+  };
+}
+
+export async function verifyRefreshToken(
+  token: string,
+): Promise<{ userId: string; email: string; role: string }> {
+  const { payload } = await jose.jwtVerify(token, getSecret(), {
+    issuer: getIssuer(),
+    audience: getAudience(),
+    algorithms: ["HS256"],
+  });
+  return {
+    userId: payload.sub!,
+    email: payload.email as string,
+    role: payload.role as string,
+  };
+}
+
+export async function createTokenPair(payload: TokenPayload) {
+  const [accessToken, refreshToken] = await Promise.all([
+    createAccessToken(payload),
+    createRefreshToken(payload),
+  ]);
+  return { accessToken, refreshToken };
+}
