@@ -1,0 +1,23 @@
+{
+  "name": "auth-service",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.15",
+    "@commitlint/cli": "^21.0.1",
+    "@commitlint/config-conventional": "^21.0.1",
+    "@types/bun": "latest",
+    "husky": "^9.1.7"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "check": "biome check",
+    "check:fix": "biome check --write",
+    "format": "biome format --write",
+    "lint": "biome lint",
+    "prepare": "husky"
+  }
+}
