@@ -116,4 +116,6 @@ dist
 .tern-port
 
 # IDE
-.cursor
+.cursor/
+.idea/
+.vscode/
