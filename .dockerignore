@@ -1,0 +1,16 @@
+node_modules/
+.git/
+.husky/
+.claude/
+coverage/
+.biome/
+.vscode/
+spec/
+*.md
+.env
+.env.test
+.env.local
+Dockerfile
+.dockerignore
+docker-compose.yml
+src/**/*.test.ts

@@ -1,19 +1,37 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
+    container_name: auth-service_db
+    restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: auth
-      POSTGRES_PASSWORD: auth
-      POSTGRES_DB: auth
+      POSTGRES_USER: ${POSTGRES_USER:-auth}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-strongpassword1*}
+      POSTGRES_DB: ${POSTGRES_DB:-authDB}
     ports:
-      - "5432:5432"
+      # Secure: Only allows connections from your local machine, not the open internet
+      - "127.0.0.1:5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U auth"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  auth:
+    build: .
+    container_name: auth-service
+    restart: unless-stopped
+    ports:
+      # Assuming 50051 for gRPC. Adjust if needed.
+      - "${PORT:-50051}:${PORT:-50051}"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
-  pgdata:
+  postgres_data:
