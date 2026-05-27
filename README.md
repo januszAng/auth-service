@@ -21,24 +21,24 @@ docker compose up --detach
 DATABASE_URL="postgres://auth:strongpassword1*@127.0.0.1:5432/auth" npx drizzle-kit push
 
 # 4. Smoke test
-buf curl --protocol connect --schema proto/auth.proto \
+bun buf curl --protocol connect --schema proto/auth.proto \
   -d '{"email":"test@example.com","password":"Str0ngPass1!"}' \
   http://localhost:50051/auth.v1.AuthService/Register
 ```
 
 ## Environment variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `POSTGRES_USER` | `auth` | PostgreSQL user |
-| `POSTGRES_PASSWORD` | `strongpassword1*` | PostgreSQL password |
-| `POSTGRES_DB` | `auth` | PostgreSQL database name |
-| `DATABASE_URL` | `postgres://auth:strongpassword1*@db:5432/auth` | Connection string (*use `db` as host in Docker, `127.0.0.1` locally*) |
-| `JWT_SECRET` | — | 64-char hex string for signing tokens |
-| `PORT` | `50051` | gRPC server port |
-| `LOG_LEVEL` | `info` | Log level: `trace`, `debug`, `info`, `warn`, `error` |
-| `DB_POOL_MAX` | `5` | Max database connections |
-| `DB_CONNECT_TIMEOUT` | `10` | Connection timeout in seconds |
+| Variable             | Default                                         | Description                                                           |
+| -------------------- | ----------------------------------------------- | --------------------------------------------------------------------- |
+| `POSTGRES_USER`      | `auth`                                          | PostgreSQL user                                                       |
+| `POSTGRES_PASSWORD`  | `strongpassword1*`                              | PostgreSQL password                                                   |
+| `POSTGRES_DB`        | `auth`                                          | PostgreSQL database name                                              |
+| `DATABASE_URL`       | `postgres://auth:strongpassword1*@db:5432/auth` | Connection string (_use `db` as host in Docker, `127.0.0.1` locally_) |
+| `JWT_SECRET`         | —                                               | 64-char hex string for signing tokens                                 |
+| `PORT`               | `50051`                                         | gRPC server port                                                      |
+| `LOG_LEVEL`          | `info`                                          | Log level: `trace`, `debug`, `info`, `warn`, `error`                  |
+| `DB_POOL_MAX`        | `5`                                             | Max database connections                                              |
+| `DB_CONNECT_TIMEOUT` | `10`                                            | Connection timeout in seconds                                         |
 
 ## Local development (without Docker)
 
@@ -68,16 +68,16 @@ bun run dev
 
 ## Available commands
 
-| Command | Description |
-|---|---|
-| `bun run dev` | Start with hot reload |
-| `bun run start` | Start the service |
-| `bun test` | Run tests |
-| `bun run check` | Lint and format check |
-| `bun run check:fix` | Auto-fix lint and format issues |
-| `bun run db:generate` | Generate migrations from schema changes |
-| `bun run db:migrate` | Run pending migrations |
-| `bun run db:push` | Push schema directly to database |
+| Command                | Description                               |
+| ---------------------- | ----------------------------------------- |
+| `bun run dev`          | Start with hot reload                     |
+| `bun run start`        | Start the service                         |
+| `bun test`             | Run tests                                 |
+| `bun run check`        | Lint and format check                     |
+| `bun run check:fix`    | Auto-fix lint and format issues           |
+| `bun run db:generate`  | Generate migrations from schema changes   |
+| `bun run db:migrate`   | Run pending migrations                    |
+| `bun run db:push`      | Push schema directly to database          |
 | `bun run buf:generate` | Regenerate gRPC stubs from `.proto` files |
 
 ## Viewing logs
@@ -106,3 +106,4 @@ LOG_LEVEL=debug docker compose up
 ├── docker-compose.yml
 ├── Dockerfile
 └── drizzle.config.ts
+```
