@@ -9,7 +9,7 @@ const mockClose = mock((cb?: () => void) => {
 });
 const mockServer = { listen: mockListen, on: mockOn, close: mockClose };
 
-mock.module("node:http", () => ({
+mock.module("node:http2", () => ({
   createServer: mock(() => mockServer),
 }));
 
@@ -26,7 +26,7 @@ mock.module("./db/connection.js", () => ({
 }));
 
 describe("startServer", () => {
-  it("starts an HTTP server on the specified port", async () => {
+  it("starts an HTTP2 server on the specified port", async () => {
     const { startServer } = await import("./server.js");
     const server = startServer(9999);
 

@@ -57,7 +57,7 @@ export async function verifyAccessToken(
     algorithms: ["HS256"],
   });
   return {
-    userId: payload.sub!,
+    userId: payload.sub as string,
     email: payload.email as string,
     role: payload.role as string,
   };
@@ -72,7 +72,7 @@ export async function verifyRefreshToken(
     algorithms: ["HS256"],
   });
   return {
-    userId: payload.sub!,
+    userId: payload.sub as string,
     email: payload.email as string,
     role: payload.role as string,
   };

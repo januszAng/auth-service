@@ -3,7 +3,11 @@ import { users } from "./users.js";
 
 const nameSymbol = Object.getOwnPropertySymbols(users).find(
   (s) => s.toString() === "Symbol(drizzle:Name)",
-)!;
+);
+
+if (!nameSymbol) {
+  throw new Error("drizzle:Name symbol not found on users table");
+}
 
 describe("users table schema", () => {
   it("has the correct table name", () => {

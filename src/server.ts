@@ -1,4 +1,4 @@
-import { createServer } from "node:http";
+import { createServer } from "node:http2";
 import { connectNodeAdapter } from "@connectrpc/connect-node";
 import { AuthService } from "./gen/auth_pb.js";
 import { logger } from "./lib/logger.js";
