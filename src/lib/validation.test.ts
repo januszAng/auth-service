@@ -1,9 +1,9 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import {
   emailSchema,
+  loginSchema,
   passwordSchema,
   registerSchema,
-  loginSchema,
   tokenSchema,
 } from "./validation.js";
 

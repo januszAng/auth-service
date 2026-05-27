@@ -3,8 +3,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse, RegisterRequest, RegisterResponse, VerifyTokenRequest, VerifyTokenResponse } from "./auth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
+import {
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+  RegisterRequest,
+  RegisterResponse,
+  VerifyTokenRequest,
+  VerifyTokenResponse,
+} from "./auth_pb.js";
 
 /**
  * @generated from service auth.v1.AuthService
@@ -50,6 +59,5 @@ export const AuthService = {
       O: RefreshTokenResponse,
       kind: MethodKind.Unary,
     },
-  }
+  },
 } as const;
-

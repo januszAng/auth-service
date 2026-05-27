@@ -1,9 +1,13 @@
-import { describe, it, expect, mock } from "bun:test";
+import { describe, expect, it, mock } from "bun:test";
 
 const mockListen = mock((_port: number, cb?: () => void) => {
   cb?.();
 });
-const mockServer = { listen: mockListen };
+const mockOn = mock(() => {});
+const mockClose = mock((cb?: () => void) => {
+  cb?.();
+});
+const mockServer = { listen: mockListen, on: mockOn, close: mockClose };
 
 mock.module("node:http", () => ({
   createServer: mock(() => mockServer),

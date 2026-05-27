@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeAll } from "bun:test";
+import { beforeAll, describe, expect, it } from "bun:test";
 import {
   createAccessToken,
   createRefreshToken,
+  createTokenPair,
   verifyAccessToken,
   verifyRefreshToken,
-  createTokenPair,
 } from "./jwt.js";
 
 beforeAll(() => {

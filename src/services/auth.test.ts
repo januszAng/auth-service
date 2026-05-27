@@ -1,12 +1,12 @@
-import { describe, it, expect, mock, beforeEach } from "bun:test";
+import { beforeEach, describe, expect, it, mock } from "bun:test";
+import type { HandlerContext } from "@connectrpc/connect";
 import type {
-  RegisterRequest,
   LoginRequest,
-  VerifyTokenRequest,
   RefreshTokenRequest,
+  RegisterRequest,
+  VerifyTokenRequest,
 } from "../gen/auth_pb.js";
 import { Role } from "../gen/auth_pb.js";
-import type { HandlerContext } from "@connectrpc/connect";
 
 // Build a mock Drizzle query builder chain
 function mockDb() {
