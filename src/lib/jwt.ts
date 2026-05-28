@@ -1,4 +1,5 @@
 import * as jose from "jose";
+import { env } from "../../env.js";
 
 interface TokenPayload {
   sub: string;
@@ -7,7 +8,7 @@ interface TokenPayload {
 }
 
 function getSecret(): Uint8Array {
-  const secret = process.env.JWT_SECRET;
+  const secret = env.JWT_SECRET;
   if (!secret) {
     throw new Error("JWT_SECRET environment variable is not set");
   }
@@ -26,12 +27,12 @@ export async function createAccessToken(
   payload: TokenPayload,
 ): Promise<string> {
   return new jose.SignJWT({ email: payload.email, role: payload.role })
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({ alg: env.JWT_ALGORITHM })
     .setSubject(payload.sub)
     .setIssuer(getIssuer())
     .setAudience(getAudience())
     .setIssuedAt()
-    .setExpirationTime("15 minutes")
+    .setExpirationTime(env.JWT_ACCESS_TOKEN_EXPIRES_IN)
     .sign(getSecret());
 }
 
@@ -39,12 +40,12 @@ export async function createRefreshToken(
   payload: TokenPayload,
 ): Promise<string> {
   return new jose.SignJWT({ email: payload.email, role: payload.role })
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({ alg: env.JWT_ALGORITHM })
     .setSubject(payload.sub)
     .setIssuer(getIssuer())
     .setAudience(getAudience())
     .setIssuedAt()
-    .setExpirationTime("7 days")
+    .setExpirationTime(env.JWT_REFRESH_TOKEN_EXPIRES_IN)
     .sign(getSecret());
 }
 
@@ -54,7 +55,7 @@ export async function verifyAccessToken(
   const { payload } = await jose.jwtVerify(token, getSecret(), {
     issuer: getIssuer(),
     audience: getAudience(),
-    algorithms: ["HS256"],
+    algorithms: [env.JWT_ALGORITHM],
   });
   return {
     userId: payload.sub as string,
@@ -69,7 +70,7 @@ export async function verifyRefreshToken(
   const { payload } = await jose.jwtVerify(token, getSecret(), {
     issuer: getIssuer(),
     audience: getAudience(),
-    algorithms: ["HS256"],
+    algorithms: [env.JWT_ALGORITHM],
   });
   return {
     userId: payload.sub as string,
