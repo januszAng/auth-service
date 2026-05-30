@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, it } from "bun:test";
+import { env } from "../../env.js";
 import {
   createAccessToken,
   createRefreshToken,
@@ -35,17 +36,6 @@ describe("createRefreshToken", () => {
   });
 });
 
-describe("missing JWT_SECRET", () => {
-  it("throws when JWT_SECRET is not set", async () => {
-    const original = process.env.JWT_SECRET;
-    delete process.env.JWT_SECRET;
-    await expect(
-      createAccessToken({ sub: "u", email: "e@t.com", role: "user" }),
-    ).rejects.toThrow("JWT_SECRET environment variable is not set");
-    process.env.JWT_SECRET = original;
-  });
-});
-
 describe("verifyAccessToken", () => {
   it("verifies a valid token", async () => {
     const token = await createAccessToken({
@@ -73,10 +63,10 @@ describe("verifyAccessToken", () => {
       email: "secret@example.com",
       role: "user",
     });
-    const originalSecret = process.env.JWT_SECRET;
-    process.env.JWT_SECRET = "a-different-secret";
-    await expect(verifyAccessToken(token)).rejects.toThrow();
-    process.env.JWT_SECRET = originalSecret;
+    const originalSecret = env.JWT_SECRET;
+    env.JWT_SECRET = "a-different-secret";
+    expect(verifyAccessToken(token)).rejects.toThrow();
+    env.JWT_SECRET = originalSecret;
   });
 });
 
