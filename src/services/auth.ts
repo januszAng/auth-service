@@ -1,7 +1,7 @@
 import { Code, ConnectError, type ServiceImpl } from "@connectrpc/connect";
 import { eq } from "drizzle-orm";
 import { db } from "../db/connection.js";
-import { users } from "../db/schema/index.js";
+import { passwordResetTokens, users } from "../db/schema/index.js";
 import type { AuthService } from "../gen/auth_pb.js";
 import { Role } from "../gen/auth_pb.js";
 import {
@@ -11,14 +11,17 @@ import {
 } from "../lib/jwt.js";
 import { logger } from "../lib/logger.js";
 import { hashPassword, verifyPassword } from "../lib/password.js";
+import { publishToQueue } from "../lib/rabbitmq.js";
 import {
+  forgotPasswordSchema,
   loginSchema,
   refreshTokenSchema,
   registerSchema,
+  resetPasswordSchema,
   tokenSchema,
 } from "../lib/validation.js";
 
-function generateVerificationToken(): string {
+function generateToken(): string {
   return crypto.randomUUID();
 }
 
@@ -63,11 +66,11 @@ const authServiceImpl: ServiceImpl<typeof AuthService> = {
       throw new ConnectError("Failed to create user", Code.Internal);
     }
 
-    const verificationToken = generateVerificationToken();
-    authLogger.info("verification token generated", {
-      userId: user.id,
+    const verificationToken = generateToken();
+    await publishToQueue({
+      type: "VERIFY_EMAIL",
       email,
-      verificationToken,
+      token: verificationToken,
     });
 
     const { accessToken, refreshToken } = await createTokenPair({
@@ -177,12 +180,116 @@ const authServiceImpl: ServiceImpl<typeof AuthService> = {
     throw new ConnectError("Not implemented", Code.Unimplemented);
   },
 
-  async forgotPassword() {
-    throw new ConnectError("Not implemented", Code.Unimplemented);
+  async forgotPassword(req) {
+    const parsed = forgotPasswordSchema.safeParse(req);
+    if (!parsed.success) {
+      const message = parsed.error.issues.map((i) => i.message).join(", ");
+      authLogger.warn("forgotPassword validation failed", { reason: message });
+      throw new ConnectError(message, Code.InvalidArgument);
+    }
+
+    const { email } = parsed.data;
+
+    const rows = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    const user = rows[0];
+    if (user) {
+      const token = generateToken();
+      const expiresAt = new Date(Date.now() + 900_000);
+
+      await db
+        .delete(passwordResetTokens)
+        .where(eq(passwordResetTokens.userId, user.id));
+
+      await db.insert(passwordResetTokens).values({
+        userId: user.id,
+        token,
+        expiresAt,
+      });
+
+      await publishToQueue({
+        type: "RESET_PASSWORD",
+        email,
+        token,
+      });
+
+      authLogger.info("password reset token generated", { userId: user.id });
+    } else {
+      authLogger.debug("forgotPassword for unknown email", { email });
+    }
+
+    return {};
   },
 
-  async resetPassword() {
-    throw new ConnectError("Not implemented", Code.Unimplemented);
+  async resetPassword(req) {
+    const parsed = resetPasswordSchema.safeParse(req);
+    if (!parsed.success) {
+      const message = parsed.error.issues.map((i) => i.message).join(", ");
+      authLogger.warn("resetPassword validation failed", { reason: message });
+      throw new ConnectError(message, Code.InvalidArgument);
+    }
+
+    const { token, newPassword } = parsed.data;
+
+    const tokenRows = await db
+      .select()
+      .from(passwordResetTokens)
+      .where(eq(passwordResetTokens.token, token))
+      .limit(1);
+
+    const tokenRow = tokenRows[0];
+    if (!tokenRow) {
+      authLogger.warn("resetPassword invalid token");
+      throw new ConnectError(
+        "Invalid or expired reset token",
+        Code.InvalidArgument,
+      );
+    }
+
+    if (tokenRow.expiresAt < new Date()) {
+      authLogger.warn("resetPassword expired token", {
+        userId: tokenRow.userId,
+      });
+      await db
+        .delete(passwordResetTokens)
+        .where(eq(passwordResetTokens.id, tokenRow.id));
+      throw new ConnectError(
+        "Invalid or expired reset token",
+        Code.InvalidArgument,
+      );
+    }
+
+    const userRows = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, tokenRow.userId))
+      .limit(1);
+
+    const user = userRows[0];
+    if (!user) {
+      authLogger.error("resetPassword user not found for token", {
+        userId: tokenRow.userId,
+      });
+      throw new ConnectError("User not found", Code.Internal);
+    }
+
+    const passwordHash = await hashPassword(newPassword);
+
+    await db
+      .update(users)
+      .set({ passwordHash, updatedAt: new Date() })
+      .where(eq(users.id, user.id));
+
+    await db
+      .delete(passwordResetTokens)
+      .where(eq(passwordResetTokens.id, tokenRow.id));
+
+    authLogger.info("password reset", { userId: user.id });
+    return {};
   },
 };
 

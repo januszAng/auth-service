@@ -9,5 +9,5 @@ logger.info("starting auth-service", {
   logLevel: env.LOG_LEVEL,
 });
 
-const server = startServer();
+const server = await startServer();
 setupGracefulShutdown(server);

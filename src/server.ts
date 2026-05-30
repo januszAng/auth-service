@@ -1,10 +1,12 @@
 import { createServer } from "node:http2";
 import { connectNodeAdapter } from "@connectrpc/connect-node";
+import { runMigrations } from "./db/migrate.js";
 import { AuthService } from "./gen/auth_pb.js";
 import { logger } from "./lib/logger.js";
 import { authServiceImpl } from "./services/auth.js";
 
-export function startServer(port = Number(process.env.PORT) || 50051) {
+export async function startServer(port = Number(process.env.PORT) || 50051) {
+  await runMigrations();
   const handler = connectNodeAdapter({
     routes(router) {
       router.service(AuthService, authServiceImpl);

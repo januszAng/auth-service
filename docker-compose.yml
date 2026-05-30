@@ -33,5 +33,16 @@ services:
       db:
         condition: service_healthy
 
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: auth-system_rabbitmq
+    ports:
+      - "5672:5672" # Port for inter-service communication
+      - "15672:15672" # Management Panel (Web UI) accessible via a web browser
+
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123*
+
 volumes:
   postgres_data:

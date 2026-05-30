@@ -1,32 +1,43 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 import type { HandlerContext } from "@connectrpc/connect";
 import type {
+  ForgotPasswordRequest,
   LoginRequest,
   RefreshTokenRequest,
   RegisterRequest,
+  ResetPasswordRequest,
   VerifyTokenRequest,
 } from "../gen/auth_pb.js";
 import { Role } from "../gen/auth_pb.js";
 
 // Build a mock Drizzle query builder chain
 function mockDb() {
-  let selectResult: unknown[] = [];
+  let selectResults: unknown[][] = [];
   let insertResult: unknown[] = [{ id: "uuid-123", role: "user" }];
 
   const db = {
     select: mock(() => db),
     from: mock(() => db),
     where: mock(() => db),
-    limit: mock(() => selectResult),
+    limit: mock(() => {
+      const result = selectResults.shift() ?? [];
+      return result;
+    }),
     insert: mock(() => db),
     values: mock(() => db),
     returning: mock(() => insertResult),
+    delete: mock(() => db),
+    update: mock(() => db),
+    set: mock(() => db),
   };
 
   return {
     db: db as unknown as Record<string, unknown>,
+    setSelectResults: (rows: unknown[][]) => {
+      selectResults = [...rows];
+    },
     setSelectResult: (rows: unknown[]) => {
-      selectResult = rows;
+      selectResults = [rows];
     },
     setInsertResult: (rows: unknown[]) => {
       insertResult = rows;
@@ -34,7 +45,12 @@ function mockDb() {
   };
 }
 
-const { db: mockDbInstance, setSelectResult, setInsertResult } = mockDb();
+const {
+  db: mockDbInstance,
+  setSelectResult,
+  setSelectResults,
+  setInsertResult,
+} = mockDb();
 
 const mockCtx = {
   method: { name: "", kind: "unary" },
@@ -74,6 +90,12 @@ mock.module("../lib/jwt.js", () => ({
     }
     throw new Error("Invalid token");
   }),
+}));
+
+const mockPublishToQueue = mock(async () => {});
+
+mock.module("../lib/rabbitmq.js", () => ({
+  publishToQueue: mockPublishToQueue,
 }));
 
 const { authServiceImpl } = await import("./auth.js");
@@ -249,6 +271,123 @@ describe("AuthService.refreshToken", () => {
     await expect(
       authServiceImpl.refreshToken(
         { refreshToken: "" } as RefreshTokenRequest,
+        mockCtx,
+      ),
+    ).rejects.toThrow();
+  });
+});
+
+describe("AuthService.forgotPassword", () => {
+  beforeEach(() => {
+    mockPublishToQueue.mockClear();
+  });
+
+  it("generates token and publishes for known email", async () => {
+    setSelectResult([{ id: "user-1" }]);
+
+    const result = await authServiceImpl.forgotPassword(
+      { email: "known@example.com" } as ForgotPasswordRequest,
+      mockCtx,
+    );
+
+    expect(result).toEqual({});
+    expect(mockPublishToQueue).toHaveBeenCalledWith({
+      type: "RESET_PASSWORD",
+      email: "known@example.com",
+      token: expect.any(String),
+    });
+  });
+
+  it("returns empty without publishing for unknown email", async () => {
+    setSelectResult([]);
+
+    const result = await authServiceImpl.forgotPassword(
+      { email: "unknown@example.com" } as ForgotPasswordRequest,
+      mockCtx,
+    );
+
+    expect(result).toEqual({});
+    expect(mockPublishToQueue).not.toHaveBeenCalled();
+  });
+
+  it("throws on invalid email", async () => {
+    await expect(
+      authServiceImpl.forgotPassword(
+        { email: "not-an-email" } as ForgotPasswordRequest,
+        mockCtx,
+      ),
+    ).rejects.toThrow();
+  });
+});
+
+describe("AuthService.resetPassword", () => {
+  const validToken = {
+    id: "token-id",
+    userId: "user-1",
+    token: "reset-token-123",
+    expiresAt: new Date(Date.now() + 600_000),
+  };
+
+  const userRow = {
+    id: "user-1",
+    email: "user@example.com",
+    passwordHash: "hashed:OldPass1",
+    role: "user",
+  };
+
+  beforeEach(() => {
+    mockPublishToQueue.mockClear();
+  });
+
+  it("resets password with valid token", async () => {
+    setSelectResults([[validToken], [userRow]]);
+
+    const result = await authServiceImpl.resetPassword(
+      {
+        token: "reset-token-123",
+        newPassword: "NewStr0ngPass!",
+      } as ResetPasswordRequest,
+      mockCtx,
+    );
+
+    expect(result).toEqual({});
+  });
+
+  it("throws on invalid token", async () => {
+    setSelectResult([]);
+
+    await expect(
+      authServiceImpl.resetPassword(
+        {
+          token: "bad-token",
+          newPassword: "NewStr0ngPass!",
+        } as ResetPasswordRequest,
+        mockCtx,
+      ),
+    ).rejects.toThrow("Invalid or expired reset token");
+  });
+
+  it("throws on expired token", async () => {
+    setSelectResult([{ ...validToken, expiresAt: new Date(Date.now() - 1) }]);
+
+    await expect(
+      authServiceImpl.resetPassword(
+        {
+          token: "expired-token",
+          newPassword: "NewStr0ngPass!",
+        } as ResetPasswordRequest,
+        mockCtx,
+      ),
+    ).rejects.toThrow("Invalid or expired reset token");
+  });
+
+  it("throws on weak password", async () => {
+    await expect(
+      authServiceImpl.resetPassword(
+        {
+          token: "any-token",
+          newPassword: "short",
+        } as ResetPasswordRequest,
         mockCtx,
       ),
     ).rejects.toThrow();

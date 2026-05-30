@@ -33,6 +33,7 @@ Identity & Access Management (IAM) microservice — standalone authentication se
 | `bun run db:generate` | Generate SQL migrations from Drizzle schema changes |
 | `bun run db:migrate` | Run pending migrations |
 | `bun run db:push` | Push schema directly to database (dev only, skips migration files) |
+| `bun run db:studio` | Launch Drizzle Studio UI for visual DB inspection |
 
 ## Architecture
 
@@ -48,7 +49,7 @@ Client (gRPC/Connect)
 
 ### Proto → code generation
 
-`proto/auth.proto` defines the `auth.v1.AuthService` with 4 unary RPCs: `Register`, `Login`, `VerifyToken`, `RefreshToken`. Running `bun run buf:generate` produces:
+`proto/auth.proto` defines the `auth.v1.AuthService` with 7 unary RPCs: `Register`, `Login`, `VerifyToken`, `RefreshToken`, `VerifyEmail`, `ForgotPassword`, `ResetPassword`. The last 3 are defined in the proto but throw `Code.Unimplemented` in the handler. Running `bun run buf:generate` produces:
 
 - `src/gen/auth_pb.ts` — message types + service descriptor (protoc-gen-es)
 - `src/gen/auth_connect.ts` — Connect-RPC transport definitions (protoc-gen-connect-es)
@@ -70,7 +71,10 @@ All errors use `ConnectError` with appropriate gRPC status codes (`InvalidArgume
 
 ### Database
 
-Drizzle ORM with `postgres.js` driver. Schema is defined in `src/db/schema/users.ts` and re-exported from `src/db/schema/index.ts`. The `users` table has: `id` (uuid PK, auto-generated), `email` (unique, not null), `password_hash`, `role` (default `'user'`), `created_at`, `updated_at`.
+Drizzle ORM with `postgres.js` driver. Schema is defined in `src/db/schema/` (two tables) and re-exported from `src/db/schema/index.ts`:
+
+- **`users`** — `id` (uuid PK), `email` (unique, not null), `password_hash` (not null), `role` (default `'user'`), `is_verified` (default `false`), `created_at`, `updated_at`
+- **`password_reset_tokens`** — `id` (uuid PK), `user_id` (FK to users.id, cascade delete), `token` (unique), `expires_at`, `created_at`
 
 The connection module (`src/db/connection.ts`) auto-connects on import and exports both the Drizzle `db` client and the raw `client` for direct SQL.
 
@@ -94,12 +98,16 @@ const mockDb = { select: () => mockDb, from: () => mockDb, where: () => mockDb }
 
 | Variable | Default | Purpose |
 |---|---|---|
+| `POSTGRES_USER` | `auth` | PostgreSQL user |
+| `POSTGRES_PASSWORD` | `auth` | PostgreSQL password |
+| `POSTGRES_DB` | `auth` | PostgreSQL database name |
 | `DATABASE_URL` | (see .env.example) | PostgreSQL connection string |
 | `JWT_SECRET` | (required) | 64-char hex string for signing tokens |
 | `PORT` | `50051` | gRPC server port |
 | `LOG_LEVEL` | `info` | trace/debug/info/warn/error/fatal |
 | `DB_POOL_MAX` | `5` | Max DB connections |
 | `DB_CONNECT_TIMEOUT` | `10` | Connection timeout (seconds) |
+| `DB_IDLE_TIMEOUT` | `30` | Idle timeout (seconds) |
 
 ## Commit conventions
 

@@ -25,10 +25,14 @@ mock.module("./db/connection.js", () => ({
   db: {},
 }));
 
+mock.module("./db/migrate.js", () => ({
+  runMigrations: mock(async () => {}),
+}));
+
 describe("startServer", () => {
   it("starts an HTTP2 server on the specified port", async () => {
     const { startServer } = await import("./server.js");
-    const server = startServer(9999);
+    const server = await startServer(9999);
 
     expect(server).toBeDefined();
     expect(mockListen).toHaveBeenCalledWith(9999, expect.any(Function));
@@ -37,7 +41,7 @@ describe("startServer", () => {
   it("uses PORT env var by default", async () => {
     process.env.PORT = "7777";
     const { startServer } = await import("./server.js");
-    startServer();
+    await startServer();
 
     expect(mockListen).toHaveBeenCalledWith(7777, expect.any(Function));
     delete process.env.PORT;
