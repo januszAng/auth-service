@@ -5,12 +5,18 @@
 
 import { MethodKind } from "@bufbuild/protobuf";
 import {
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
   LoginRequest,
   LoginResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
   RegisterRequest,
   RegisterResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  VerifyEmailRequest,
+  VerifyEmailResponse,
   VerifyTokenRequest,
   VerifyTokenResponse,
 } from "./auth_pb.js";
@@ -49,14 +55,39 @@ export const AuthService = {
       kind: MethodKind.Unary,
     },
     /**
-     * 🔥 NOWOŚĆ
-     *
      * @generated from rpc auth.v1.AuthService.RefreshToken
      */
     refreshToken: {
       name: "RefreshToken",
       I: RefreshTokenRequest,
       O: RefreshTokenResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc auth.v1.AuthService.VerifyEmail
+     */
+    verifyEmail: {
+      name: "VerifyEmail",
+      I: VerifyEmailRequest,
+      O: VerifyEmailResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc auth.v1.AuthService.ForgotPassword
+     */
+    forgotPassword: {
+      name: "ForgotPassword",
+      I: ForgotPasswordRequest,
+      O: ForgotPasswordResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc auth.v1.AuthService.ResetPassword
+     */
+    resetPassword: {
+      name: "ResetPassword",
+      I: ResetPasswordRequest,
+      O: ResetPasswordResponse,
       kind: MethodKind.Unary,
     },
   },

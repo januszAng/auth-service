@@ -18,6 +18,10 @@ import {
   tokenSchema,
 } from "../lib/validation.js";
 
+function generateVerificationToken(): string {
+  return crypto.randomUUID();
+}
+
 const authLogger = logger.child({ component: "auth" });
 
 function roleFromDb(dbRole: string): Role {
@@ -58,6 +62,13 @@ const authServiceImpl: ServiceImpl<typeof AuthService> = {
       authLogger.error("register insert failed to return user", { email });
       throw new ConnectError("Failed to create user", Code.Internal);
     }
+
+    const verificationToken = generateVerificationToken();
+    authLogger.info("verification token generated", {
+      userId: user.id,
+      email,
+      verificationToken,
+    });
 
     const { accessToken, refreshToken } = await createTokenPair({
       sub: user.id,
@@ -160,6 +171,18 @@ const authServiceImpl: ServiceImpl<typeof AuthService> = {
         Code.Unauthenticated,
       );
     }
+  },
+
+  async verifyEmail() {
+    throw new ConnectError("Not implemented", Code.Unimplemented);
+  },
+
+  async forgotPassword() {
+    throw new ConnectError("Not implemented", Code.Unimplemented);
+  },
+
+  async resetPassword() {
+    throw new ConnectError("Not implemented", Code.Unimplemented);
   },
 };
 
