@@ -1,7 +1,8 @@
+import { env } from "../../env.js";
 export async function hashPassword(password: string): Promise<string> {
   return Bun.password.hash(password, {
     algorithm: "bcrypt",
-    cost: 12,
+    cost: env.BCRYPT_ROUNDS,
   });
 }
 
