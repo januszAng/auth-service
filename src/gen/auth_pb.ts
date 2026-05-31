@@ -22,7 +22,7 @@ import {
 export const file_auth: GenFile =
   /*@__PURE__*/
   fileDesc(
-    "CgphdXRoLnByb3RvEgdhdXRoLnYxIjIKD1JlZ2lzdGVyUmVxdWVzdBINCgVlbWFpbBgBIAEoCRIQCghwYXNzd29yZBgCIAEoCSJQChBSZWdpc3RlclJlc3BvbnNlEg8KB3VzZXJfaWQYASABKAkSFAoMYWNjZXNzX3Rva2VuGAIgASgJEhUKDXJlZnJlc2hfdG9rZW4YAyABKAkiLwoMTG9naW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIjwKDUxvZ2luUmVzcG9uc2USFAoMYWNjZXNzX3Rva2VuGAEgASgJEhUKDXJlZnJlc2hfdG9rZW4YAiABKAkiKgoSVmVyaWZ5VG9rZW5SZXF1ZXN0EhQKDGFjY2Vzc190b2tlbhgBIAEoCSJSChNWZXJpZnlUb2tlblJlc3BvbnNlEg8KB3VzZXJfaWQYASABKAkSDQoFZW1haWwYAiABKAkSGwoEcm9sZRgDIAEoDjINLmF1dGgudjEuUm9sZSIsChNSZWZyZXNoVG9rZW5SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkiQwoUUmVmcmVzaFRva2VuUmVzcG9uc2USFAoMYWNjZXNzX3Rva2VuGAEgASgJEhUKDXJlZnJlc2hfdG9rZW4YAiABKAkqOwoEUm9sZRIUChBST0xFX1VOU1BFQ0lGSUVEEAASDQoJUk9MRV9VU0VSEAESDgoKUk9MRV9BRE1JThACMp0CCgtBdXRoU2VydmljZRI/CghSZWdpc3RlchIYLmF1dGgudjEuUmVnaXN0ZXJSZXF1ZXN0GhkuYXV0aC52MS5SZWdpc3RlclJlc3BvbnNlEjYKBUxvZ2luEhUuYXV0aC52MS5Mb2dpblJlcXVlc3QaFi5hdXRoLnYxLkxvZ2luUmVzcG9uc2USSAoLVmVyaWZ5VG9rZW4SGy5hdXRoLnYxLlZlcmlmeVRva2VuUmVxdWVzdBocLmF1dGgudjEuVmVyaWZ5VG9rZW5SZXNwb25zZRJLCgxSZWZyZXNoVG9rZW4SHC5hdXRoLnYxLlJlZnJlc2hUb2tlblJlcXVlc3QaHS5hdXRoLnYxLlJlZnJlc2hUb2tlblJlc3BvbnNlYgZwcm90bzM",
+    "CgphdXRoLnByb3RvEgdhdXRoLnYxIjIKD1JlZ2lzdGVyUmVxdWVzdBINCgVlbWFpbBgBIAEoCRIQCghwYXNzd29yZBgCIAEoCSJQChBSZWdpc3RlclJlc3BvbnNlEg8KB3VzZXJfaWQYASABKAkSFAoMYWNjZXNzX3Rva2VuGAIgASgJEhUKDXJlZnJlc2hfdG9rZW4YAyABKAkiLwoMTG9naW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIjwKDUxvZ2luUmVzcG9uc2USFAoMYWNjZXNzX3Rva2VuGAEgASgJEhUKDXJlZnJlc2hfdG9rZW4YAiABKAkiKgoSVmVyaWZ5VG9rZW5SZXF1ZXN0EhQKDGFjY2Vzc190b2tlbhgBIAEoCSJSChNWZXJpZnlUb2tlblJlc3BvbnNlEg8KB3VzZXJfaWQYASABKAkSDQoFZW1haWwYAiABKAkSGwoEcm9sZRgDIAEoDjINLmF1dGgudjEuUm9sZSIsChNSZWZyZXNoVG9rZW5SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkiQwoUUmVmcmVzaFRva2VuUmVzcG9uc2USFAoMYWNjZXNzX3Rva2VuGAEgASgJEhUKDXJlZnJlc2hfdG9rZW4YAiABKAkiIwoSVmVyaWZ5RW1haWxSZXF1ZXN0Eg0KBXRva2VuGAEgASgJIiYKE1ZlcmlmeUVtYWlsUmVzcG9uc2USDwoHdXNlcl9pZBgBIAEoCSImChVGb3Jnb3RQYXNzd29yZFJlcXVlc3QSDQoFZW1haWwYASABKAkiGAoWRm9yZ290UGFzc3dvcmRSZXNwb25zZSI7ChRSZXNldFBhc3N3b3JkUmVxdWVzdBINCgV0b2tlbhgBIAEoCRIUCgxuZXdfcGFzc3dvcmQYAiABKAkiFwoVUmVzZXRQYXNzd29yZFJlc3BvbnNlKjsKBFJvbGUSFAoQUk9MRV9VTlNQRUNJRklFRBAAEg0KCVJPTEVfVVNFUhABEg4KClJPTEVfQURNSU4QAjKKBAoLQXV0aFNlcnZpY2USPwoIUmVnaXN0ZXISGC5hdXRoLnYxLlJlZ2lzdGVyUmVxdWVzdBoZLmF1dGgudjEuUmVnaXN0ZXJSZXNwb25zZRI2CgVMb2dpbhIVLmF1dGgudjEuTG9naW5SZXF1ZXN0GhYuYXV0aC52MS5Mb2dpblJlc3BvbnNlEkgKC1ZlcmlmeVRva2VuEhsuYXV0aC52MS5WZXJpZnlUb2tlblJlcXVlc3QaHC5hdXRoLnYxLlZlcmlmeVRva2VuUmVzcG9uc2USSwoMUmVmcmVzaFRva2VuEhwuYXV0aC52MS5SZWZyZXNoVG9rZW5SZXF1ZXN0Gh0uYXV0aC52MS5SZWZyZXNoVG9rZW5SZXNwb25zZRJICgtWZXJpZnlFbWFpbBIbLmF1dGgudjEuVmVyaWZ5RW1haWxSZXF1ZXN0GhwuYXV0aC52MS5WZXJpZnlFbWFpbFJlc3BvbnNlElEKDkZvcmdvdFBhc3N3b3JkEh4uYXV0aC52MS5Gb3Jnb3RQYXNzd29yZFJlcXVlc3QaHy5hdXRoLnYxLkZvcmdvdFBhc3N3b3JkUmVzcG9uc2USTgoNUmVzZXRQYXNzd29yZBIdLmF1dGgudjEuUmVzZXRQYXNzd29yZFJlcXVlc3QaHi5hdXRoLnYxLlJlc2V0UGFzc3dvcmRSZXNwb25zZWIGcHJvdG8z",
   );
 
 /**
@@ -155,8 +155,6 @@ export type VerifyTokenResponse = Message<"auth.v1.VerifyTokenResponse"> & {
   email: string;
 
   /**
-   * 🔥 NOWOŚĆ: Serwisy od razu wiedzą, jakie uprawnienia ma użytkownik
-   *
    * @generated from field: auth.v1.Role role = 3;
    */
   role: Role;
@@ -171,8 +169,6 @@ export const VerifyTokenResponseSchema: GenMessage<VerifyTokenResponse> =
   messageDesc(file_auth, 5);
 
 /**
- * 🔥 NOWOŚĆ: Struktury do odświeżania tokenów
- *
  * @generated from message auth.v1.RefreshTokenRequest
  */
 export type RefreshTokenRequest = Message<"auth.v1.RefreshTokenRequest"> & {
@@ -214,14 +210,115 @@ export const RefreshTokenResponseSchema: GenMessage<RefreshTokenResponse> =
   messageDesc(file_auth, 7);
 
 /**
- * Definiujemy role w systemie jako silnie typowany enum
- *
+ * @generated from message auth.v1.VerifyEmailRequest
+ */
+export type VerifyEmailRequest = Message<"auth.v1.VerifyEmailRequest"> & {
+  /**
+   * @generated from field: string token = 1;
+   */
+  token: string;
+};
+
+/**
+ * Describes the message auth.v1.VerifyEmailRequest.
+ * Use `create(VerifyEmailRequestSchema)` to create a new message.
+ */
+export const VerifyEmailRequestSchema: GenMessage<VerifyEmailRequest> =
+  /*@__PURE__*/
+  messageDesc(file_auth, 8);
+
+/**
+ * @generated from message auth.v1.VerifyEmailResponse
+ */
+export type VerifyEmailResponse = Message<"auth.v1.VerifyEmailResponse"> & {
+  /**
+   * @generated from field: string user_id = 1;
+   */
+  userId: string;
+};
+
+/**
+ * Describes the message auth.v1.VerifyEmailResponse.
+ * Use `create(VerifyEmailResponseSchema)` to create a new message.
+ */
+export const VerifyEmailResponseSchema: GenMessage<VerifyEmailResponse> =
+  /*@__PURE__*/
+  messageDesc(file_auth, 9);
+
+/**
+ * @generated from message auth.v1.ForgotPasswordRequest
+ */
+export type ForgotPasswordRequest = Message<"auth.v1.ForgotPasswordRequest"> & {
+  /**
+   * @generated from field: string email = 1;
+   */
+  email: string;
+};
+
+/**
+ * Describes the message auth.v1.ForgotPasswordRequest.
+ * Use `create(ForgotPasswordRequestSchema)` to create a new message.
+ */
+export const ForgotPasswordRequestSchema: GenMessage<ForgotPasswordRequest> =
+  /*@__PURE__*/
+  messageDesc(file_auth, 10);
+
+/**
+ * @generated from message auth.v1.ForgotPasswordResponse
+ */
+export type ForgotPasswordResponse =
+  Message<"auth.v1.ForgotPasswordResponse"> & {};
+
+/**
+ * Describes the message auth.v1.ForgotPasswordResponse.
+ * Use `create(ForgotPasswordResponseSchema)` to create a new message.
+ */
+export const ForgotPasswordResponseSchema: GenMessage<ForgotPasswordResponse> =
+  /*@__PURE__*/
+  messageDesc(file_auth, 11);
+
+/**
+ * @generated from message auth.v1.ResetPasswordRequest
+ */
+export type ResetPasswordRequest = Message<"auth.v1.ResetPasswordRequest"> & {
+  /**
+   * @generated from field: string token = 1;
+   */
+  token: string;
+
+  /**
+   * @generated from field: string new_password = 2;
+   */
+  newPassword: string;
+};
+
+/**
+ * Describes the message auth.v1.ResetPasswordRequest.
+ * Use `create(ResetPasswordRequestSchema)` to create a new message.
+ */
+export const ResetPasswordRequestSchema: GenMessage<ResetPasswordRequest> =
+  /*@__PURE__*/
+  messageDesc(file_auth, 12);
+
+/**
+ * @generated from message auth.v1.ResetPasswordResponse
+ */
+export type ResetPasswordResponse =
+  Message<"auth.v1.ResetPasswordResponse"> & {};
+
+/**
+ * Describes the message auth.v1.ResetPasswordResponse.
+ * Use `create(ResetPasswordResponseSchema)` to create a new message.
+ */
+export const ResetPasswordResponseSchema: GenMessage<ResetPasswordResponse> =
+  /*@__PURE__*/
+  messageDesc(file_auth, 13);
+
+/**
  * @generated from enum auth.v1.Role
  */
 export enum Role {
   /**
-   * W proto3 pierwszy element enuma musi być zerem (domyślny)
-   *
    * @generated from enum value: ROLE_UNSPECIFIED = 0;
    */
   UNSPECIFIED = 0,
@@ -271,13 +368,35 @@ export const AuthService: GenService<{
     output: typeof VerifyTokenResponseSchema;
   };
   /**
-   * 🔥 NOWOŚĆ
-   *
    * @generated from rpc auth.v1.AuthService.RefreshToken
    */
   refreshToken: {
     methodKind: "unary";
     input: typeof RefreshTokenRequestSchema;
     output: typeof RefreshTokenResponseSchema;
+  };
+  /**
+   * @generated from rpc auth.v1.AuthService.VerifyEmail
+   */
+  verifyEmail: {
+    methodKind: "unary";
+    input: typeof VerifyEmailRequestSchema;
+    output: typeof VerifyEmailResponseSchema;
+  };
+  /**
+   * @generated from rpc auth.v1.AuthService.ForgotPassword
+   */
+  forgotPassword: {
+    methodKind: "unary";
+    input: typeof ForgotPasswordRequestSchema;
+    output: typeof ForgotPasswordResponseSchema;
+  };
+  /**
+   * @generated from rpc auth.v1.AuthService.ResetPassword
+   */
+  resetPassword: {
+    methodKind: "unary";
+    input: typeof ResetPasswordRequestSchema;
+    output: typeof ResetPasswordResponseSchema;
   };
 }> = /*@__PURE__*/ serviceDesc(file_auth, 0);

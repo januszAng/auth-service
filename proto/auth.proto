@@ -13,6 +13,9 @@ service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
   rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc ForgotPassword(ForgotPasswordRequest) returns (ForgotPasswordResponse);
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
 }
 
 message RegisterRequest {
@@ -54,3 +57,24 @@ message RefreshTokenResponse {
   string access_token = 1;
   string refresh_token = 2;
 }
+
+message VerifyEmailRequest {
+  string token = 1;
+}
+
+message VerifyEmailResponse {
+  string user_id = 1;
+}
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ForgotPasswordResponse {}
+
+message ResetPasswordRequest {
+  string token = 1;
+  string new_password = 2;
+}
+
+message ResetPasswordResponse {}

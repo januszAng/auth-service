@@ -1,0 +1,1 @@
+ALTER TABLE "password_reset_tokens" RENAME COLUMN "password_hash" TO "token";

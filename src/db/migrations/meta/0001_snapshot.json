@@ -1,6 +1,6 @@
 {
-  "id": "1542b7bd-6561-42e3-8f62-a66cf214528c",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "99ff695e-60cb-4cb7-8bc3-72859085013e",
+  "prevId": "1542b7bd-6561-42e3-8f62-a66cf214528c",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -21,8 +21,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "password_hash": {
-          "name": "password_hash",
+        "token": {
+          "name": "token",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
