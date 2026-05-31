@@ -18,11 +18,12 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32, "Must be at least 32 characters long"),
   LOG_LEVEL: z
     .enum(["info", "warn", "error", "debug", "trace"])
-    .default("info"),
+    .default("debug"),
   JWT_ACCESS_TOKEN_EXPIRES_IN: z.string().default("15 minutes"),
   JWT_REFRESH_TOKEN_EXPIRES_IN: z.string().default("7 days"),
   JWT_ALGORITHM: z.enum(["HS256", "RS256"]).default("HS256"),
   BCRYPT_ROUNDS: z.coerce.number().positive().min(10).max(20).default(12),
+  RABBITMQ_URL: z.string().startsWith("amqp://"),
 });
 
 export type Env = z.infer<typeof envSchema>;
