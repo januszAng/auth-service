@@ -1,8 +1,6 @@
 version: v2
 plugins:
+  # In Connect-ES v2, this single plugin handles both messages and services!
   - local: protoc-gen-es
-    out: src/gen
-    opt: target=ts
-  - local: protoc-gen-connect-es
     out: src/gen
     opt: target=ts
